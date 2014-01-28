@@ -1,4 +1,4 @@
 nlp
 ===
 
-An NLP library written in Haskell
+An NLP library written in Haskell and Python.
