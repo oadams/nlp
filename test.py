@@ -1,5 +1,6 @@
 import unittest
 from distance import min_edit_distance
+from distance import min_edit_distance_align
 from wer import word_error_rate
 
 class TestDistance(unittest.TestCase):
@@ -11,6 +12,16 @@ class TestDistance(unittest.TestCase):
         self.assertEqual(min_edit_distance("saturday", "sunday"), 3)
         self.assertEqual(min_edit_distance("donkey", "horse"), 4)
         self.assertEqual(min_edit_distance("industry", "interest"), 6)
+
+    def test_min_edit_distance(self):
+        self.assertEqual(min_edit_distance("intention", "execution",
+                sub_cost=lambda x, y: 0 if x == y else 2), 8)
+
+    def test_default_min_edit_distance_align(self):
+        self.assertEqual(
+                min_edit_distance_align("intention", "execution"),
+                [("i", "*"), ("n", "e"), ("t", "x"), ("e", "e"), ("*", "c"),
+                 ("n", "u"), ("t", "t"), ("i", "i"), ("o", "o"), ("n", "n")])
 
 class TestWER(unittest.TestCase):
 
