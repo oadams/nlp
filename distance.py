@@ -37,10 +37,3 @@ def min_edit_distance(source, target,
                     distance[i, j-1] + del_cost(target[j-1]))
 
     return distance[len(source), len(target)]
-
-assert min_edit_distance("intention", "execution") == 5
-assert min_edit_distance("kitten", "sitting") == 3
-assert min_edit_distance("rosettacode", "raisethysword") == 8
-assert min_edit_distance("saturday", "sunday") == 3
-assert min_edit_distance("donkey", "horse") == 4
-assert min_edit_distance("industry", "interest") == 6
