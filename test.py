@@ -1,5 +1,6 @@
 import unittest
 from distance import min_edit_distance
+from wer import word_error_rate
 
 class TestDistance(unittest.TestCase):
 
@@ -10,6 +11,15 @@ class TestDistance(unittest.TestCase):
         self.assertEqual(min_edit_distance("saturday", "sunday"), 3)
         self.assertEqual(min_edit_distance("donkey", "horse"), 4)
         self.assertEqual(min_edit_distance("industry", "interest"), 6)
+
+class TestWER(unittest.TestCase):
+
+    def test_word_error_rate(self):
+        result = word_error_rate("i um the phone is i left the portable phone\
+                upstairs last night".split(),
+                "i got it to the fullest i love to portable form of\
+                stores last night".split())
+        self.assertEqual("{0:.1f}".format(result), "76.9")
 
 if __name__ == "__main__":
     unittest.main()
