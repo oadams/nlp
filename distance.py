@@ -38,6 +38,10 @@ def min_edit_distance(source, target,
 
     return distance[len(source), len(target)]
 
+def print_matrix(matrix):
+    for row in matrix:
+        print row
+
 def min_edit_distance_align(source, target,
         ins_cost=lambda _x: 1,
         del_cost=lambda _x: 1,
@@ -54,54 +58,65 @@ def min_edit_distance_align(source, target,
 
     """
 
-    # Initialize an m+1 by n+1 array. Note that the strings start from index 1,
-    # with index 0 being used to denote the empty string.
+    # Initialize an m+1 by n+1 array to hold the distances, and an equal sized
+    # array to store the backpointers. Note that the strings start from index
+    # 1, with index 0 being used to denote the empty string.
     n = len(target)
     m = len(source)
-    distance = np.zeros([m+1, n+1], dtype=np.int16)
+    dist = [[0]*(n+1) for _ in xrange(m+1)]
+    bptrs = [[[]]*(n+1) for _ in xrange(m+1)]
 
-    # Initialize the array that holds pointers to the previous cell in the
-    # alignment path.
-    pointers = np.zeros([m+1, n+1], dtype=np.dtype(("int16", (2,))))
-
-    # Initialize the zeroth row and column to be the distance from the empty
-    # string.
+    # Adjust the initialization of the first column and row of the matrices to
+    # their appropriate values.
     for i in xrange(1, m+1):
-        distance[i, 0] = distance[i-1, 0] + ins_cost(source[i-1])
-        pointers[i, 0] = np.array([i-1, 0])
+        dist[i][0] = i
+        bptrs[i][0] = (i-1, 0)
     for j in xrange(1, n+1):
-        distance[0, j] = distance[0, j-1] + ins_cost(target[j-1])
-        pointers[0, j] = np.array([0, j-1])
+        dist[0][j] = j
+        bptrs[0][j] = (0, j-1)
 
     # Do the dynamic programming to fill in the matrix with the edit distances.
     for j in xrange(1, n+1):
         for i in xrange(1, m+1):
             options = [
-                    (distance[i-1, j] + ins_cost(source[i-1]),
-                        np.array([i-1, j])),
-                    (distance[i-1, j-1] + sub_cost(source[i-1],target[j-1]),
-                        np.array([i-1, j-1])),
-                    (distance[i, j-1] + del_cost(target[j-1]),
-                        np.array([i, j-1]))]
-            (minimum, pointer) = sorted(options, key=lambda x: x[0])[0]
-            distance[i, j] = minimum
-            pointers[i, j] = pointer
+                    (dist[i-1][j] + ins_cost(target[j-1]),
+                        (i, j-1)),
+                    (dist[i-1][j-1] + sub_cost(source[i-1],target[j-1]),
+                        (i-1, j-1)),
+                    (dist[i][j-1] + del_cost(source[i-1]),
+                        (i-1, j))]
+            (minimum, pointer) = sorted(options)[0]
+            dist[i][j] = minimum
+            bptrs[i][j] = pointer
 
-    print distance
-    print pointers
-    # Put the backtrace in a list
-    """"
-    cell = np.array([m, n])
-    backtrace = [cell]
+    print "\ndistance matrix:"
+    print_matrix(dist)
+    print "\nbackpointer matrix:"
+    print_matrix(bptrs)
+
+    bt = [(m,n)]
+    cell = bptrs[m][n]
     while True:
-        cell = pointers[cell[0], cell[1]]
-        backtrace.append(cell)
-        if cell[0] == 0 and cell[1] == 0:
+        bt.append(cell)
+        if bptrs[cell[0]][cell[1]]:
+            cell = bptrs[cell[0]][cell[1]]
+        else:
             break
-    backtrace.reverse()
 
-    print backtrace
+    trace = list(reversed(bt))
+    print "\ntrace:"
+    print trace
 
-    if cell[0] - prev_cell[0] == 1 and cell[1] - prev_cell[1] == 1:
-        backtrace
-    """
+    for i in xrange(1, len(trace)):
+        current = trace[i]
+        prev = trace[i-1]
+
+        # If diagonal, it's a substitution
+        if current[0] - prev[0] == 1 and current[1] - prev[1] == 1:
+            print source[i-1], target[i-1]
+        elif current[0] - prev[0] == 1:
+            print source[i-1], "*"
+        elif current[1] - prev[1] == 1:
+            print "*", target[i-1]
+        else:
+            print "ERROR"
