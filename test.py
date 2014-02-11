@@ -1,6 +1,7 @@
 import unittest
 from distance import min_edit_distance
 from distance import min_edit_distance_align
+from distance import cluster_alignment_errors
 from wer import word_error_rate
 
 class TestDistance(unittest.TestCase):
@@ -34,6 +35,11 @@ class TestDistance(unittest.TestCase):
         self.assertEqual(
                 min_edit_distance_align("saturday", "sunday"),
                 [("s","s"),("a","*"),("t","*"),("u","u"),("r","n"),("d","d"),("a","a"),("y","y")])
+
+    def test_cluster_alignment_errors(self):
+        self.assertEqual(
+                cluster_alignment_errors(min_edit_distance_align("saturday", "slnday")),
+                [("s","s"),(["a","t","u","r"],["l","n"]),("d","d"),("a","a"),("y","y")])
 
 class TestWER(unittest.TestCase):
 

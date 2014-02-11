@@ -118,3 +118,29 @@ def min_edit_distance_align(source, target,
             alignment.append(("*", target[current[1]-1]))
 
     return alignment
+
+def cluster_alignment_errors(alignment):
+    """Takes an alignment created by min_edit_distance_align() and groups
+    consecutive errors together. This is useful, because there are often
+    many possible alignments, and so often we can't meaningfully distinguish
+    between alignment errors at the character level, so it makes many-to-many
+    mistakes more readable."""
+
+    newalign = []
+    mistakes = ([],[])
+    for align_item in alignment:
+        if align_item[0] == align_item[1]:
+            if mistakes != ([],[]):
+                newalign.append(mistakes)
+                mistakes = ([],[])
+            newalign.append(align_item)
+        else:
+            if align_item[0] != "*":
+                mistakes[0].append(align_item[0])
+            if align_item[1] != "*":
+                mistakes[1].append(align_item[1])
+    if mistakes != ([],[]):
+        newalign.append(mistakes)
+        mistakes = ([],[])
+
+    return newalign
