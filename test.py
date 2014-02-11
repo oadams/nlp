@@ -40,6 +40,21 @@ class TestDistance(unittest.TestCase):
         self.assertEqual(
                 cluster_alignment_errors(min_edit_distance_align("saturday", "slnday")),
                 [("s","s"),(["a","t","u","r"],["l","n"]),("d","d"),("a","a"),("y","y")])
+        self.assertEqual(
+                cluster_alignment_errors(min_edit_distance_align("industry",
+                "interest")),
+                [('i', 'i'), ('n', 'n'), (['d', 'u', 's', 't', 'r', 'y'], 
+                ['t', 'e', 'r', 'e', 's', 't'])])
+        self.assertEqual(
+                cluster_alignment_errors(min_edit_distance_align("intention",
+                "execution")),
+                [(['i', 'n', 't', 'e', 'n'], ['e', 'x', 'e', 'c', 'u']), 
+                ('t', 't'), ('i', 'i'), ('o', 'o'), ('n', 'n')])
+        self.assertEqual(
+                cluster_alignment_errors(min_edit_distance_align("rosettacode",
+                "raisethysword")),None)
+                #[(['i', 'n', 't', 'e', 'n'], ['e', 'x', 'e', 'c', 'u']), 
+                #('t', 't'), ('i', 'i'), ('o', 'o'), ('n', 'n')])
 
 class TestWER(unittest.TestCase):
 
