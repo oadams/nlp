@@ -46,7 +46,7 @@ def min_edit_distance_align(source, target,
         ins_cost=lambda _x: 1,
         del_cost=lambda _x: 1,
         sub_cost=lambda x, y: 0 if x == y else 1):
-    """Finds the minimum cost alignment between two strings using the
+    """Finds a minimum cost alignment between two strings using the
     Levenshtein weighting as a default, but offering keyword arguments to
     supply functions to measure the costs for editing with different
     characters.
@@ -80,20 +80,16 @@ def min_edit_distance_align(source, target,
         for i in xrange(1, m+1):
             options = [
                     (dist[i-1][j] + ins_cost(target[j-1]),
-                        (i, j-1)),
+                        (i-1, j)),
                     (dist[i-1][j-1] + sub_cost(source[i-1],target[j-1]),
                         (i-1, j-1)),
                     (dist[i][j-1] + del_cost(source[i-1]),
-                        (i-1, j))]
+                        (i, j-1))]
             (minimum, pointer) = sorted(options)[0]
             dist[i][j] = minimum
             bptrs[i][j] = pointer
 
-    print "\ndistance matrix:"
-    print_matrix(dist)
-    print "\nbackpointer matrix:"
-    print_matrix(bptrs)
-
+    # Put the backtrace in a list, and reverse it to get a forward trace.
     bt = [(m,n)]
     cell = bptrs[m][n]
     while True:
@@ -102,21 +98,23 @@ def min_edit_distance_align(source, target,
             cell = bptrs[cell[0]][cell[1]]
         else:
             break
-
     trace = list(reversed(bt))
-    print "\ntrace:"
-    print trace
 
+    # Construct an alignment between source and target using the trace.
+    alignment = []
     for i in xrange(1, len(trace)):
         current = trace[i]
         prev = trace[i-1]
 
-        # If diagonal, it's a substitution
+        # If the cell is diagonal from the previous one, it's a substitution or
+        # there wasn't a change.
         if current[0] - prev[0] == 1 and current[1] - prev[1] == 1:
-            print source[i-1], target[i-1]
+            alignment.append((source[current[0]-1], target[current[1]-1]))
+        # Otherwise if it moves only on the source side, it's a deletion
         elif current[0] - prev[0] == 1:
-            print source[i-1], "*"
+            alignment.append((source[current[0]-1], "*"))
+        # Otherwise if it moves only on the target side, it's an insertion
         elif current[1] - prev[1] == 1:
-            print "*", target[i-1]
-        else:
-            print "ERROR"
+            alignment.append(("*", target[current[1]-1]))
+
+    return alignment
