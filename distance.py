@@ -112,10 +112,10 @@ def min_edit_distance_align(source, target,
             alignment.append((source[current[0]-1], target[current[1]-1]))
         # Otherwise if it moves only on the source side, it's a deletion
         elif current[0] - prev[0] == 1:
-            alignment.append((source[current[0]-1], "*"))
+            alignment.append((source[current[0]-1], ""))
         # Otherwise if it moves only on the target side, it's an insertion
         elif current[1] - prev[1] == 1:
-            alignment.append(("*", target[current[1]-1]))
+            alignment.append(("", target[current[1]-1]))
 
     return alignment
 
@@ -135,9 +135,9 @@ def cluster_alignment_errors(alignment):
                 mistakes = ([],[])
             newalign.append(align_item)
         else:
-            if align_item[0] != "*":
+            if align_item[0] != "":
                 mistakes[0].append(align_item[0])
-            if align_item[1] != "*":
+            if align_item[1] != "":
                 mistakes[1].append(align_item[1])
     if mistakes != ([],[]):
         newalign.append(mistakes)

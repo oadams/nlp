@@ -21,20 +21,20 @@ class TestDistance(unittest.TestCase):
     def test_default_min_edit_distance_align(self):
         self.assertEqual(
                 min_edit_distance_align("sub", "sube"),
-                [("s", "s"), ("u", "u"), ("b", "b"), ("*", "e")])
+                [("s", "s"), ("u", "u"), ("b", "b"), ("", "e")])
         self.assertEqual(
                 min_edit_distance_align("horse", "ros"),
-                [("h", "r"),("o", "o"),("r", "*"),("s", "s"),("e", "*")])
+                [("h", "r"),("o", "o"),("r", ""),("s", "s"),("e", "")])
         self.assertEqual(
                 min_edit_distance_align("kitten", "sitting"),
                 [("k", "s"),("i", "i"),("t", "t"),("t", "t"),("e", "i"),("n",
-                "n"), ("*", "g")])
+                "n"), ("", "g")])
         self.assertEqual(
                 min_edit_distance_align("papes", "papers"),
-                [("p","p"),("a","a"),("p","p"),("e","e"),("*","r"),("s","s")])
+                [("p","p"),("a","a"),("p","p"),("e","e"),("","r"),("s","s")])
         self.assertEqual(
                 min_edit_distance_align("saturday", "sunday"),
-                [("s","s"),("a","*"),("t","*"),("u","u"),("r","n"),("d","d"),("a","a"),("y","y")])
+                [("s","s"),("a",""),("t",""),("u","u"),("r","n"),("d","d"),("a","a"),("y","y")])
 
     def test_cluster_alignment_errors(self):
         self.assertEqual(
