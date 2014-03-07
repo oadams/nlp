@@ -131,16 +131,16 @@ def cluster_alignment_errors(alignment):
     for align_item in alignment:
         if align_item[0] == align_item[1]:
             if mistakes != ([],[]):
-                newalign.append(mistakes)
+                newalign.append((tuple(mistakes[0]), tuple(mistakes[1])))
                 mistakes = ([],[])
-            newalign.append(align_item)
+            newalign.append((tuple(align_item[0]), tuple(align_item[1])))
         else:
             if align_item[0] != "":
                 mistakes[0].append(align_item[0])
             if align_item[1] != "":
                 mistakes[1].append(align_item[1])
     if mistakes != ([],[]):
-        newalign.append(mistakes)
+        newalign.append((tuple(mistakes[0]), tuple(mistakes[1])))
         mistakes = ([],[])
 
     return newalign
@@ -149,5 +149,5 @@ def word_error_rate(ref, hypo):
     """Returns the word error rate of the supplied hypothesis with respect to
     the reference string."""
 
-    min_edit_distance = min_edit_distance(ref, hypo)
-    return 100 * float(min_edit_distance) / len(ref)
+    distance = min_edit_distance(ref, hypo)
+    return 100 * float(distance) / len(ref)
