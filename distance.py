@@ -133,7 +133,7 @@ def cluster_alignment_errors(alignment):
             if mistakes != ([],[]):
                 newalign.append((tuple(mistakes[0]), tuple(mistakes[1])))
                 mistakes = ([],[])
-            newalign.append((tuple(align_item[0]), tuple(align_item[1])))
+            newalign.append((tuple([align_item[0]]), tuple([align_item[1]])))
         else:
             if align_item[0] != "":
                 mistakes[0].append(align_item[0])
