@@ -2,14 +2,19 @@ from distance import min_edit_distance_align
 from distance import cluster_alignment_errors
 from collections import defaultdict
 
-ref = open("/home/oadams/Desktop/oliver-phonemes/ref.txt").readlines()
-hypo = open("/home/oadams/Desktop/oliver-phonemes/hypo.txt").readlines()
+import sys
+
+ref = open(sys.argv[1]).readlines()
+hypo = open(sys.argv[2]).readlines()
+
+#ref = open("/home/oadams/Desktop/oliver-phonemes/ref.txt").readlines()
+#hypo = open("/home/oadams/Desktop/oliver-phonemes/hypo.txt").readlines()
 
 assert len(ref) == len(hypo)
 
 errors = []
-for i in xrange(len(ref)):
-    print i, len(ref)
+for i in range(len(ref)):
+    print(i, len(ref))
     refline = ref[i].split()
     hypoline = hypo[i].split()
     alignment = min_edit_distance_align(refline, hypoline)
@@ -18,7 +23,7 @@ for i in xrange(len(ref)):
         if align_item[0] != align_item[1]:
             errors.append(align_item)
 
-print errors
+print(errors)
 error_dict = defaultdict(int)
 for error in errors:
     tuple_error = (tuple(error[0]), tuple(error[1]))
@@ -26,4 +31,4 @@ for error in errors:
 
 sorted_errors = sorted(error_dict.items(), key=lambda item: item[1])
 for error in sorted_errors:
-    print error
+    print(error)
